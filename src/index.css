@@ -30,8 +30,9 @@ ul {
 }
 
 a {
-  color: currentColor;
+  /* color: currentColor; */
   text-decoration: none;
+  margin: 20px;
 }
 
 button {
@@ -47,4 +48,20 @@ img {
   max-width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+input {
+  width: auto;
+  height: 60px;
+  margin: 20px;
+  font-size: 50px;
+  border-radius: 4px;
+}
+
+button {
+  width: auto;
+  height: 60px;
+  margin: 20px;
+  font-size: 50px;
+  border-radius: 4px;
 }
