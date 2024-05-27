@@ -16,7 +16,7 @@ function MovieDetailsPage() {
   const { movieId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const prevLocationRef = useRef(location);
+  const backLinkRef = useRef(location.state);
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -47,8 +47,7 @@ function MovieDetailsPage() {
   }, [movieId]);
 
   const handleGoBack = () => {
-    const prevLocation = prevLocationRef.current.state?.from || "/";
-    navigate(prevLocation);
+    navigate(backLinkRef.current || "/");
   };
 
   if (isLoading) return <Loader />;

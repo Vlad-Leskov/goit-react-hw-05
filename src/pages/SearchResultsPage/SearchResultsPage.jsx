@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../components/Loader/Loader";
 
@@ -9,6 +9,7 @@ function SearchResultsPage() {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     if (query) {
@@ -47,7 +48,9 @@ function SearchResultsPage() {
         <ul>
           {results.map((movie) => (
             <li key={movie.id}>
-              <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+              <Link to={`/movies/${movie.id}`} state={location}>
+                {movie.title}
+              </Link>
             </li>
           ))}
         </ul>
