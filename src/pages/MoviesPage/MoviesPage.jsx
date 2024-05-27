@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import MovieList from "../../components/MovieList/MovieList";
@@ -8,17 +9,24 @@ import LoadMoreBtn from "../../components/LoadMoreBtn/LoadMoreBtn";
 
 function MoviesPage() {
   const [movies, setMovies] = useState([]);
-  const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("query") || "";
 
-  const fetchMovies = async (newQuery, newPage) => {
+  useEffect(() => {
+    if (query) {
+      fetchMovies(query, page);
+    }
+  }, [query, page]);
+
+  const fetchMovies = async (searchQuery, newPage) => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?query=${newQuery}&page=${newPage}&include_adult=false&language=en-US`,
+        `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&page=${newPage}&include_adult=false&language=en-US`,
         {
           headers: {
             Authorization:
@@ -39,15 +47,12 @@ function MoviesPage() {
   };
 
   const handleSearchSubmit = (searchQuery) => {
-    setQuery(searchQuery);
+    setSearchParams({ query: searchQuery });
     setPage(1);
-    fetchMovies(searchQuery, 1);
   };
 
   const handleLoadMore = () => {
-    const newPage = page + 1;
-    setPage(newPage);
-    fetchMovies(query, newPage);
+    setPage((prevPage) => prevPage + 1);
   };
 
   return (
@@ -55,7 +60,7 @@ function MoviesPage() {
       <h1>Movies</h1>
       <SearchBar onSubmit={handleSearchSubmit} />
       {error && <ErrorMessage message={error} />}
-      <MovieList movies={movies} onClick={() => {}} />
+      <MovieList movies={movies} />
       {isLoading && <Loader />}
       {movies.length > 0 && !isLoading && (
         <LoadMoreBtn onClick={handleLoadMore} />

@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Routes, Route, Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
 import axios from "axios";
 import MovieCast from "../../components/MovieCast/MovieCast";
 import MovieReviews from "../../components/MovieReviews/MovieReviews";
@@ -8,6 +15,8 @@ import Loader from "../../components/Loader/Loader";
 function MovieDetailsPage() {
   const { movieId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const prevLocationRef = useRef(location);
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -38,7 +47,8 @@ function MovieDetailsPage() {
   }, [movieId]);
 
   const handleGoBack = () => {
-    navigate("/");
+    const prevLocation = prevLocationRef.current.state?.from || "/";
+    navigate(prevLocation);
   };
 
   if (isLoading) return <Loader />;
